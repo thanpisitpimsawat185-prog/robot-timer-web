@@ -1,42 +1,211 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17102b"><title>Robot Timer — Rainbow Edition</title>
-<style>
-:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(125deg,#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158);background-size:400% 400%;animation:bg 18s ease infinite}.app{width:min(960px,calc(100% - 24px));margin:auto;padding:24px 0}.header,.row,.controls,.footer{display:flex;align-items:center;justify-content:space-between;gap:10px}.header{margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;width:46px;height:46px;place-items:center;border:2px solid #ffffff99;border-radius:15px;background:#17102bea;font-size:23px}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;color:#e3daf4;font-size:11px}.status,.card{border:1px solid #ffffff40;background:#17102bea;box-shadow:0 20px 60px #08051377;backdrop-filter:blur(12px)}.status{padding:8px 12px;border-radius:99px;color:#e4dff2;font-size:12px}.status.active{color:#52ffbc}.rainbow{height:7px;margin:12px 0 20px;border-radius:9px;background:linear-gradient(90deg,#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158);background-size:200%;animation:bg 6s linear infinite}.layout{display:grid;grid-template-columns:1.4fr .8fr;gap:14px}.card{border-radius:22px;padding:22px}.timer{text-align:center}.row{margin-bottom:10px}.label{color:#e2d9f3;font-size:11px;letter-spacing:.1em}.modes{display:flex;gap:4px;padding:4px;border:1px solid #ffffff30;border-radius:10px}.button,.mode{font:inherit;color:#fff;cursor:pointer;border:1px solid #ffffff40;background:#ffffff16;border-radius:10px;padding:11px 14px;touch-action:manipulation}.mode{padding:7px 10px;font-size:11px}.mode[aria-pressed=true]{background:linear-gradient(100deg,#ff5277,#a85cff,#38cfff)}.clock-area{position:relative;display:grid;min-height:290px;place-items:center}.halo{position:absolute;width:min(250px,68vw);aspect-ratio:1;border:3px solid transparent;border-radius:50%;background:linear-gradient(#17102b,#17102b) padding-box,conic-gradient(#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158) border-box;animation:spin 12s linear infinite;pointer-events:none}.clock{position:relative;font-size:clamp(54px,10vw,84px);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.06em}.fraction{font-size:.43em;color:#ffe94a}.clock-label{position:relative;color:#e4dff2;font-size:12px}.duration{display:none;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;color:#e4dff2}.duration.visible{display:flex}.duration input{width:65px;padding:7px;border:1px solid #ffffff50;border-radius:8px;background:#100c20;color:#fff;text-align:center}.controls{justify-content:center;flex-wrap:wrap}.button:hover:not(:disabled){filter:brightness(1.25);transform:translateY(-1px)}.button:disabled{opacity:.45;cursor:not-allowed}.primary{background:linear-gradient(100deg,#ff477e,#ff9a42,#ffe94a);color:#241022;font-weight:800}.hint{margin:14px 0 0;color:#d0c6e2;font-size:11px}.laps{min-height:350px}.laps h2{margin:0;font-size:15px}.count{font-size:11px;color:#ddd3ee}.list{max-height:300px;overflow:auto}.empty{display:grid;min-height:250px;place-items:center;color:#d0c6e2;text-align:center;font-size:12px;line-height:1.8}.lap{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid #ffffff25;font-variant-numeric:tabular-nums}.lap-info{display:flex;flex-direction:column;gap:4px;text-align:left}.lap-name{font-size:12px;font-weight:700}.lap-total{font-size:10px;color:#c9bddc}.lap-time{color:#ffe94a;font-weight:800}.best .lap-name,.best .lap-time{color:#52ffbc}.footer{margin-top:14px;color:#eee5f8;font-size:11px}.clear{padding:5px;border:0;background:none;color:white;text-decoration:underline;cursor:pointer}@keyframes bg{to{background-position:100% 50%}}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:680px){.app{padding-top:16px}.layout{grid-template-columns:1fr}.card{padding:18px 14px}.clock-area{min-height:260px}.laps{min-height:230px}.empty{min-height:140px}.list{max-height:230px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17102b">
+  <meta name="description" content="Robot Timer — นาฬิกาจับเวลาภารกิจ">
+  <title>Robot Timer — Rainbow Edition</title>
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
+    *{box-sizing:border-box}
+    body{min-height:100vh;margin:0;background:linear-gradient(125deg,#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158);background-size:400% 400%;animation:rainbow-bg 20s ease infinite}
+    button,input{font:inherit}button{cursor:pointer}
+    .app{width:min(960px,calc(100% - 24px));margin:auto;padding:24px 0}
+    .header,.row,.controls,.footer{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .header{margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;width:46px;height:46px;place-items:center;border:2px solid #ffffff99;border-radius:15px;background:#17102bea;font-size:23px}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;color:#e3daf4;font-size:11px}
+    .status,.card{border:1px solid #ffffff40;background:#17102bf2;box-shadow:0 20px 60px #08051377;backdrop-filter:blur(12px)}.status{padding:8px 12px;border-radius:99px;color:#e4dff2;font-size:12px}.status.active{color:#52ffbc}.rainbow{height:7px;margin:12px 0 20px;border-radius:9px;background:linear-gradient(90deg,#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158);background-size:200%;animation:rainbow-bg 6s linear infinite}
+    .layout{display:grid;grid-template-columns:1.4fr .8fr;gap:14px}.card{position:relative;border-radius:22px;padding:22px}.timer{text-align:center}.row{margin-bottom:10px}.label{color:#e2d9f3;font-size:11px;letter-spacing:.1em}.modes{display:flex;gap:4px;padding:4px;border:1px solid #ffffff30;border-radius:10px}.mode{padding:7px 10px;border:0;border-radius:8px;background:transparent;color:#e4dff2;font-size:11px}.mode[aria-pressed=true]{background:linear-gradient(100deg,#ff5277,#a85cff,#38cfff);color:#fff}.mode:disabled{opacity:.5;cursor:not-allowed}
+    .clock-area{position:relative;display:grid;min-height:290px;place-items:center}.halo{position:absolute;width:min(250px,68vw);aspect-ratio:1;border:3px solid transparent;border-radius:50%;background:linear-gradient(#17102b,#17102b) padding-box,conic-gradient(#ff3158,#ff922e,#ffe94a,#36e982,#31c8ff,#6962ff,#d84dff,#ff3158) border-box;animation:spin 12s linear infinite;pointer-events:none}.clock-content{position:relative;z-index:1;pointer-events:none}.clock{font-size:clamp(54px,10vw,84px);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.06em;line-height:1}.fraction{font-size:.43em;color:#ffe94a}.clock-label{margin-top:8px;color:#e4dff2;font-size:12px}
+    .duration{display:none;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;color:#e4dff2}.duration.visible{display:flex}.duration input{width:65px;padding:7px;border:1px solid #ffffff50;border-radius:8px;background:#100c20;color:#fff;text-align:center}.controls{position:relative;z-index:2;justify-content:center;flex-wrap:wrap}.button{position:relative;z-index:2;min-height:46px;padding:0 14px;border:1px solid #ffffff55;border-radius:10px;background:#ffffff20;color:#fff;touch-action:manipulation;pointer-events:auto}.button:hover:not(:disabled){filter:brightness(1.2)}.button:disabled{opacity:.5;cursor:not-allowed}.primary{background:linear-gradient(100deg,#ff477e,#ff9a42,#ffe94a);color:#241022;font-weight:800}.hint{margin:14px 0 0;color:#d0c6e2;font-size:11px}
+    .laps{min-height:350px}.laps h2{margin:0;font-size:15px}.count{font-size:11px;color:#ddd3ee}.list{max-height:300px;overflow:auto}.empty{display:grid;min-height:250px;place-items:center;color:#d0c6e2;text-align:center;font-size:12px;line-height:1.8}.lap{display:flex;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid #ffffff25;font-variant-numeric:tabular-nums}.lap-info{display:flex;flex-direction:column;gap:4px;text-align:left}.lap-name{font-size:12px;font-weight:700}.lap-total{font-size:10px;color:#c9bddc}.lap-time{color:#ffe94a;font-weight:800}.best .lap-name,.best .lap-time{color:#52ffbc}.footer{margin-top:14px;color:#eee5f8;font-size:11px}.clear{padding:5px;border:0;background:none;color:white;text-decoration:underline;cursor:pointer}
+    @keyframes rainbow-bg{to{background-position:100% 50%}}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:680px){.app{padding-top:16px}.layout{grid-template-columns:1fr}.card{padding:18px 14px}.clock-area{min-height:260px}.laps{min-height:230px}.empty{min-height:140px}.list{max-height:230px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
 </head>
-<body><main class="app">
-<header class="header"><div class="brand"><div class="logo">🤖</div><div><h1>ROBOT TIMER</h1><p>RAINBOW MISSION CONTROL</p></div></div><div class="status" id="status" role="status" aria-live="polite">พร้อมเริ่ม</div></header>
-<div class="rainbow"></div>
-<div class="layout">
-<section class="card timer"><div class="row"><span class="label">MISSION CLOCK</span><div class="modes" role="group" aria-label="รูปแบบเวลา"><button class="mode" type="button" data-mode="up" aria-pressed="true">จับขึ้น</button><button class="mode" type="button" data-mode="down" aria-pressed="false">นับถอยหลัง</button></div></div>
-<div class="clock-area"><div class="halo" aria-hidden="true"></div><div><div class="clock"><span id="main">00:00</span><span class="fraction">.<span id="fraction">00</span></span></div><div id="label" class="clock-label">นาที : วินาที : เศษวินาที</div></div></div>
-<div class="duration" id="duration"><label for="minutes">เวลาภารกิจ</label><input id="minutes" type="number" min="1" max="999" value="3"><span>นาที</span></div>
-<div class="controls"><button class="button primary" id="start" type="button">▶ เริ่มจับเวลา</button><button class="button" id="lap" type="button" disabled>◉ บันทึกรอบ</button><button class="button" id="reset" type="button">↺ รีเซ็ต</button></div><p class="hint"><kbd>Space</kbd> เริ่ม/พัก · <kbd>L</kbd> บันทึกรอบ · <kbd>R</kbd> รีเซ็ต</p></section>
-<section class="card laps"><div class="row"><h2>เวลารอบ</h2><span class="count" id="count">0 รอบ</span></div><div class="list" id="list"><div class="empty">🌈<br>เริ่มจับเวลาแล้วกด “บันทึกรอบ”</div></div></section>
-</div><footer class="footer"><span>ความละเอียด 1/100 วินาที</span><button class="clear" id="clear" type="button">ล้างรอบ</button></footer>
-</main>
+<body>
+  <main class="app">
+    <header class="header"><div class="brand"><div class="logo" aria-hidden="true">🤖</div><div><h1>ROBOT TIMER</h1><p>RAINBOW MISSION CONTROL</p></div></div><div class="status" id="status" role="status" aria-live="polite">พร้อมเริ่ม</div></header>
+    <div class="rainbow" aria-hidden="true"></div>
+    <div class="layout">
+      <section class="card timer" aria-label="นาฬิกาจับเวลาภารกิจ">
+        <div class="row"><span class="label">MISSION CLOCK</span><div class="modes" role="group" aria-label="รูปแบบเวลา"><button class="mode" type="button" data-mode="up" aria-pressed="true">จับขึ้น</button><button class="mode" type="button" data-mode="down" aria-pressed="false">นับถอยหลัง</button></div></div>
+        <div class="clock-area"><div class="halo" aria-hidden="true"></div><div class="clock-content"><div class="clock" id="clock" role="timer" aria-live="off"><span id="main">00:00</span><span class="fraction">.<span id="fraction">00</span></span></div><div id="label" class="clock-label">นาที : วินาที : เศษวินาที</div></div></div>
+        <div class="duration" id="duration"><label for="minutes">เวลาภารกิจ</label><input id="minutes" type="number" min="1" max="999" value="3" inputmode="numeric"><span>นาที</span></div>
+        <div class="controls"><button class="button primary" id="start" type="button">▶ เริ่มจับเวลา</button><button class="button" id="lap" type="button" disabled>◉ บันทึกรอบ</button><button class="button" id="reset" type="button">↺ รีเซ็ต</button></div>
+        <p class="hint"><kbd>Space</kbd> เริ่ม/พัก · <kbd>L</kbd> บันทึกรอบ · <kbd>R</kbd> รีเซ็ต</p>
+      </section>
+      <section class="card laps" aria-labelledby="laps-heading"><div class="row"><h2 id="laps-heading">เวลารอบ</h2><span class="count" id="count">0 รอบ</span></div><div class="list" id="list"><div class="empty">🌈<br>เริ่มจับเวลาแล้วกด “บันทึกรอบ”</div></div></section>
+    </div>
+    <footer class="footer"><span>ความละเอียด 1/100 วินาที</span><button class="clear" id="clear" type="button">ล้างรอบ</button></footer>
+  </main>
 <script>
-(()=>{
- const $=id=>document.getElementById(id);
- const mainDisplay=$('main'), fractionDisplay=$('fraction'), status=$('status'), startButton=$('start'), lapButton=$('lap'), resetButton=$('reset'), minutes=$('minutes');
- const modeButtons=[...document.querySelectorAll('[data-mode]')];
- let mode='up', running=false, finished=false, startedAt=0, elapsed=0, timerId=null, lastLap=0, laps=[];
- const target=()=>Math.max(1,Math.min(999,Number(minutes.value)||3))*60000;
- const elapsedNow=()=>elapsed+(running?performance.now()-startedAt:0);
- function format(ms){const c=Math.floor(Math.max(0,ms)/10),s=Math.floor(c/100);return{main:String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'),fraction:String(c%100).padStart(2,'0')}}
- function render(){const used=elapsedNow(),shown=mode==='down'?Math.max(0,target()-used):used,t=format(shown);mainDisplay.textContent=t.main;fractionDisplay.textContent=t.fraction;if(mode==='down'&&running&&used>=target())finish()}
- function setStatus(text,active=false){status.textContent=text;status.classList.toggle('active',active)}
- function start(){if(running){elapsed=elapsedNow();running=false;clearInterval(timerId);startButton.textContent='▶ ทำต่อ';setStatus('พักชั่วคราว');render();return}if(finished){elapsed=0;lastLap=0;laps=[];renderLaps();finished=false}running=true;startedAt=performance.now();timerId=setInterval(render,10);startButton.textContent='Ⅱ พักเวลา';lapButton.disabled=false;minutes.disabled=true;modeButtons.forEach(b=>b.disabled=true);setStatus('กำลังจับเวลา',true);render()}
- function finish(){running=false;finished=true;elapsed=target();clearInterval(timerId);startButton.textContent='▶ เริ่มใหม่';lapButton.disabled=true;minutes.disabled=false;modeButtons.forEach(b=>b.disabled=false);setStatus('หมดเวลา');render()}
- function reset(){running=false;finished=false;elapsed=0;lastLap=0;laps=[];clearInterval(timerId);startButton.textContent='▶ เริ่มจับเวลา';lapButton.disabled=true;minutes.disabled=false;modeButtons.forEach(b=>b.disabled=false);setStatus('พร้อมเริ่ม');renderLaps();render()}
- function addLap(){if(!running)return;const now=elapsedNow();laps.unshift({total:now,split:now-lastLap});lastLap=now;renderLaps()}
- function renderLaps(){$('count').textContent=`${laps.length} รอบ`;if(!laps.length){$('list').innerHTML='<div class="empty">🌈<br>เริ่มจับเวลาแล้วกด “บันทึกรอบ”</div>';return}const best=Math.min(...laps.map(x=>x.split));$('list').innerHTML=laps.map((x,i)=>{const a=format(x.total),b=format(x.split);return `<div class="lap ${x.split===best?'best':''}"><div class="lap-info"><span class="lap-name">รอบ ${String(laps.length-i).padStart(2,'0')}${x.split===best?' · เร็วสุด':''}</span><span class="lap-total">เวลาสะสม ${a.main}.${a.fraction}</span></div><strong class="lap-time">+${b.main}.${b.fraction}</strong></div>`}).join('')}
- modeButtons.forEach(button=>button.addEventListener('click',()=>{if(running)return;mode=button.dataset.mode;modeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));$('duration').classList.toggle('visible',mode==='down');$('label').textContent=mode==='down'?'เวลาที่เหลือ · นาที : วินาที : เศษวินาที':'นาที : วินาที : เศษวินาที';elapsed=0;finished=false;startButton.textContent='▶ เริ่มจับเวลา';setStatus('พร้อมเริ่ม');render()}));
- startButton.addEventListener('click',start);lapButton.addEventListener('click',addLap);resetButton.addEventListener('click',reset);$('clear').addEventListener('click',()=>{laps=[];lastLap=elapsedNow();renderLaps()});minutes.addEventListener('input',render);
- window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();start()}else if(e.key.toLowerCase()==='l'){e.preventDefault();addLap()}else if(e.key.toLowerCase()==='r'){e.preventDefault();reset()}});
- render();
+(() => {
+  const $ = id => document.getElementById(id);
+  const mainDisplay = $('main');
+  const fractionDisplay = $('fraction');
+  const statusElement = $('status');
+  const startButton = $('start');
+  const lapButton = $('lap');
+  const resetButton = $('reset');
+  const minutesInput = $('minutes');
+  const modeButtons = [...document.querySelectorAll('[data-mode]')];
+
+  let mode = 'up';
+  let running = false;
+  let finished = false;
+  let hasStarted = false;
+  let startedAt = 0;
+  let elapsedBeforeStart = 0;
+  let intervalId = null;
+  let lastLapAt = 0;
+  let laps = [];
+
+  function targetMs() {
+    const value = Number(minutesInput.value);
+    return Math.max(1, Math.min(999, Number.isFinite(value) && value ? value : 3)) * 60000;
+  }
+  function elapsedNow() {
+    return elapsedBeforeStart + (running ? performance.now() - startedAt : 0);
+  }
+  function formatTime(ms) {
+    const centiseconds = Math.floor(Math.max(0, ms) / 10);
+    const totalSeconds = Math.floor(centiseconds / 100);
+    return {
+      main: `${String(Math.floor(totalSeconds / 60)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`,
+      fraction: String(centiseconds % 100).padStart(2, '0')
+    };
+  }
+  function render() {
+    const used = elapsedNow();
+    const displayed = mode === 'down' ? Math.max(0, targetMs() - used) : used;
+    const time = formatTime(displayed);
+    mainDisplay.textContent = time.main;
+    fractionDisplay.textContent = time.fraction;
+    $('clock').setAttribute('aria-label', `${time.main} จุด ${time.fraction}`);
+    if (mode === 'down' && running && used >= targetMs()) finishTimer();
+  }
+  function setStatus(message, active = false) {
+    statusElement.textContent = message;
+    statusElement.classList.toggle('active', active);
+  }
+  function startTimer() {
+    if (running) {
+      elapsedBeforeStart = elapsedNow();
+      running = false;
+      clearInterval(intervalId);
+      intervalId = null;
+      startButton.textContent = '▶ ทำต่อ';
+      setStatus('พักชั่วคราว');
+      render();
+      return;
+    }
+    if (finished) {
+      elapsedBeforeStart = 0;
+      lastLapAt = 0;
+      laps = [];
+      renderLaps();
+      finished = false;
+      hasStarted = false;
+    }
+    hasStarted = true;
+    running = true;
+    startedAt = performance.now();
+    intervalId = window.setInterval(render, 10);
+    startButton.textContent = 'Ⅱ พักเวลา';
+    lapButton.disabled = false;
+    minutesInput.disabled = true;
+    modeButtons.forEach(button => { button.disabled = true; });
+    setStatus('กำลังจับเวลา', true);
+    render();
+  }
+  function finishTimer() {
+    if (!running) return;
+    elapsedBeforeStart = targetMs();
+    running = false;
+    finished = true;
+    clearInterval(intervalId);
+    intervalId = null;
+    startButton.textContent = '▶ เริ่มใหม่';
+    lapButton.disabled = false;
+    minutesInput.disabled = false;
+    modeButtons.forEach(button => { button.disabled = false; });
+    setStatus('หมดเวลา');
+    render();
+  }
+  function resetTimer() {
+    running = false;
+    finished = false;
+    hasStarted = false;
+    elapsedBeforeStart = 0;
+    lastLapAt = 0;
+    laps = [];
+    clearInterval(intervalId);
+    intervalId = null;
+    startButton.textContent = '▶ เริ่มจับเวลา';
+    lapButton.disabled = true;
+    minutesInput.disabled = false;
+    modeButtons.forEach(button => { button.disabled = false; });
+    setStatus('พร้อมเริ่ม');
+    renderLaps();
+    render();
+  }
+  function addLap() {
+    if (!hasStarted) return;
+    const current = elapsedNow();
+    laps.unshift({ total: current, split: Math.max(0, current - lastLapAt) });
+    lastLapAt = current;
+    renderLaps();
+  }
+  function renderLaps() {
+    $('count').textContent = `${laps.length} รอบ`;
+    if (!laps.length) {
+      $('list').innerHTML = '<div class="empty">🌈<br>เริ่มจับเวลาแล้วกด “บันทึกรอบ”</div>';
+      return;
+    }
+    const bestSplit = Math.min(...laps.map(lap => lap.split));
+    $('list').innerHTML = laps.map((lap, index) => {
+      const total = formatTime(lap.total);
+      const split = formatTime(lap.split);
+      const best = lap.split === bestSplit;
+      return `<div class="lap ${best ? 'best' : ''}"><div class="lap-info"><span class="lap-name">รอบ ${String(laps.length - index).padStart(2, '0')}${best ? ' · เร็วสุด' : ''}</span><span class="lap-total">เวลาสะสม ${total.main}.${total.fraction}</span></div><strong class="lap-time">+${split.main}.${split.fraction}</strong></div>`;
+    }).join('');
+  }
+
+  modeButtons.forEach(button => button.addEventListener('click', () => {
+    if (running) return;
+    mode = button.dataset.mode;
+    modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    $('duration').classList.toggle('visible', mode === 'down');
+    $('label').textContent = mode === 'down' ? 'เวลาที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที';
+    elapsedBeforeStart = 0;
+    lastLapAt = 0;
+    hasStarted = false;
+    finished = false;
+    laps = [];
+    lapButton.disabled = true;
+    startButton.textContent = '▶ เริ่มจับเวลา';
+    setStatus('พร้อมเริ่ม');
+    renderLaps();
+    render();
+  }));
+  startButton.addEventListener('click', startTimer);
+  lapButton.addEventListener('click', addLap);
+  resetButton.addEventListener('click', resetTimer);
+  $('clear').addEventListener('click', () => {
+    laps = [];
+    lastLapAt = elapsedNow();
+    renderLaps();
+  });
+  minutesInput.addEventListener('input', render);
+  window.addEventListener('keydown', event => {
+    if (event.ctrlKey || event.metaKey || event.altKey || ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+    if (event.code === 'Space') { event.preventDefault(); startTimer(); }
+    else if (event.key.toLowerCase() === 'l') { event.preventDefault(); addLap(); }
+    else if (event.key.toLowerCase() === 'r') { event.preventDefault(); resetTimer(); }
+  });
+  render();
 })();
 </script>
 </body>
