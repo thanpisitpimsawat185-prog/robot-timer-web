@@ -7,13 +7,13 @@
   <meta name="description" content="Robot Timer — นาฬิกาจับเวลาภารกิจหุ่นยนต์">
   <title>Robot Timer — Mission Control</title>
   <style>
-    :root{color-scheme:dark;--bg:#090b16;--line:#29314a;--text:#f4f6ff;--muted:#9ba5c1;--lime:#d5ff64;--cyan:#73e8ff;--violet:#a88bff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    :root{color-scheme:dark;--bg:#090b16;--line:#29314a;--text:#f4f6ff;--muted:#9ba5c1;--lime:#d5ff64;--cyan:#73e8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     *{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{min-height:100vh;margin:0;overflow-x:hidden;color:var(--text);background:radial-gradient(ellipse at 50% -25%,#27315a 0,transparent 58%),radial-gradient(ellipse at 5% 70%,#102d3a55,transparent 35%),var(--bg)}
     body:before{position:fixed;z-index:0;inset:0;pointer-events:none;content:"";opacity:.35;background-image:radial-gradient(1px 1px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 83% 25%,#d5ff64 98%,transparent),radial-gradient(1px 1px at 68% 80%,#fff 98%,transparent),radial-gradient(1px 1px at 23% 72%,#73e8ff 98%,transparent);background-size:330px 280px;animation:drift 70s linear infinite}
     button,input{font:inherit}button{color:inherit;cursor:pointer}.app{position:relative;z-index:1;width:min(1080px,calc(100% - 36px));margin:auto;padding:28px 0 34px}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.brand{display:flex;align-items:center;gap:12px}.brandmark{display:grid;width:46px;height:46px;place-items:center;border:1px solid #536341;border-radius:15px;background:linear-gradient(145deg,#29321d,#131a1c);box-shadow:0 0 28px #d5ff6418;font-size:23px}.brand-title{margin:0;font-size:17px;font-weight:760}.brand-sub{margin:4px 0 0;color:var(--muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}.live{display:flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:#111526;color:#b9c1d5;font-size:12px}.live-dot{width:8px;height:8px;border-radius:50%;background:#69738b}.live.running{border-color:#50632e;color:var(--lime)}.live.running .live-dot{background:var(--lime);box-shadow:0 0 13px var(--lime);animation:pulse 1.15s infinite}
     .hero{margin:0 0 18px}.overline{display:flex;align-items:center;gap:9px;margin:0 0 7px;color:var(--cyan);font-size:10px;font-weight:750;letter-spacing:.2em}.overline:before{width:18px;height:1px;background:currentColor;content:""}.hero h1{margin:0;font-size:clamp(23px,4vw,32px);letter-spacing:-.04em}.hero p:last-child{margin:7px 0 0;color:var(--muted);font-size:13px}
     .dashboard{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,.82fr);gap:16px;align-items:stretch}.panel{position:relative;overflow:hidden;border:1px solid #2a324b;border-radius:24px;background:linear-gradient(145deg,#151a2bed,#0f1321f2);box-shadow:0 26px 90px #0005,inset 0 1px #ffffff08;backdrop-filter:blur(18px);animation:rise .65s both}.timer-panel{padding:clamp(20px,4vw,34px);text-align:center}.timer-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.section-kicker{margin:0;color:#aab4cf;font-size:10px;font-weight:750;letter-spacing:.18em}.mode-switch{display:inline-flex;gap:3px;padding:4px;border:1px solid #2b334b;border-radius:11px;background:#0b0e19}.mode-switch button{padding:7px 11px;border:0;border-radius:8px;background:transparent;color:var(--muted);font-size:11px}.mode-switch button[aria-pressed=true]{background:#29314a;color:white}.mode-switch button:disabled{cursor:default;opacity:.55}
-    .clock-stage{position:relative;display:grid;min-height:306px;place-items:center;margin:15px 0 0}.ring,.ring-glow,.orbit{position:absolute;pointer-events:none}.ring{width:min(290px,74vw);height:min(290px,74vw);transform:rotate(-90deg)}.ring-track,.ring-progress{fill:none;stroke-width:2}.ring-track{stroke:#ffffff12}.ring-progress{stroke:url(#ringGradient);stroke-linecap:round;stroke-dasharray:879.65;stroke-dashoffset:879.65;filter:drop-shadow(0 0 7px #d5ff6480);transition:stroke-dashoffset .2s linear}.ring-glow{width:min(232px,59vw);height:min(232px,59vw);border:1px solid #d5ff6414;border-radius:50%;box-shadow:0 0 55px #a88bff12,inset 0 0 45px #73e8ff08;animation:breath 4s infinite}.orbit{width:min(275px,70vw);height:min(275px,70vw);border:1px dashed #96a4d51b;border-radius:50%;animation:spin 42s linear infinite}.orbit:after{position:absolute;top:14%;left:10%;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);content:""}.clock-content{position:relative;z-index:1;pointer-events:none}.clock{font-size:clamp(58px,10vw,88px);font-weight:720;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.075em;text-shadow:0 0 35px #d5ff6418;white-space:nowrap}.fraction{color:var(--lime);font-size:.42em;letter-spacing:-.025em}.clock-label{margin-top:13px;color:#a1acc8;font-size:11px;letter-spacing:.08em}.mission-time{display:none;align-items:center;justify-content:center;gap:8px;margin:6px 0 0;color:#aab4cf;font-size:12px}.mission-time.visible{display:flex}.mission-time input{width:66px;padding:7px;border:1px solid #343d59;border-radius:9px;outline:0;background:#0b0e19;color:white;text-align:center}.mission-time input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #73e8ff20}.controls{position:relative;z-index:2;display:flex;justify-content:center;gap:9px;margin-top:8px}.btn{min-height:46px;padding:0 16px;border:1px solid #303952;border-radius:12px;background:#1a2033;color:#e8ecfa;font-size:12px;font-weight:700;transition:transform .18s,border-color .2s,background .2s,box-shadow .2s}.btn:hover:not(:disabled){transform:translateY(-2px);border-color:#687496;background:#222a40;box-shadow:0 8px 25px #0004}.btn:active:not(:disabled){transform:scale(.98)}.btn.primary{min-width:145px;border-color:var(--lime);background:linear-gradient(120deg,#d5ff64,#b6f85b);color:#151c0b;box-shadow:0 0 24px #d5ff6422}.btn:disabled{opacity:.42;cursor:not-allowed}.btn:focus-visible,.mode-switch button:focus-visible,.clear:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.hotkeys{margin:15px 0 0;color:#818ba5;font-size:10px}.hotkeys kbd{padding:3px 6px;border:1px solid #333c56;border-radius:5px;background:#171c2c;color:#c5cce0;font:inherit}
+    .clock-stage{position:relative;display:grid;min-height:306px;place-items:center;margin:15px 0 0}.ring,.ring-glow,.orbit{position:absolute;pointer-events:none}.ring{width:min(290px,74vw);height:min(290px,74vw);transform:rotate(-90deg)}.ring-track,.ring-progress{fill:none;stroke-width:2}.ring-track{stroke:#ffffff12}.ring-progress{stroke:url(#ringGradient);stroke-linecap:round;stroke-dasharray:879.65;stroke-dashoffset:879.65;filter:drop-shadow(0 0 7px #d5ff6480);transition:stroke-dashoffset .2s linear}.ring-glow{width:min(232px,59vw);height:min(232px,59vw);border:1px solid #d5ff6414;border-radius:50%;box-shadow:0 0 55px #a88bff12,inset 0 0 45px #73e8ff08;animation:breath 4s infinite}.orbit{width:min(275px,70vw);height:min(275px,70vw);border:1px dashed #96a4d51b;border-radius:50%;animation:spin 42s linear infinite}.orbit:after{position:absolute;top:14%;left:10%;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);content:""}.clock-content{position:relative;z-index:1;pointer-events:none}.clock{font-size:clamp(58px,10vw,88px);font-weight:720;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.075em;text-shadow:0 0 35px #d5ff6418;white-space:nowrap}.fraction{color:var(--lime);font-size:.42em;letter-spacing:-.025em}.clock-label{margin-top:13px;color:#a1acc8;font-size:11px;letter-spacing:.08em}.mission-time{display:none;align-items:center;justify-content:center;gap:8px;margin:6px 0 0;color:#aab4cf;font-size:12px}.mission-time.visible{display:flex}.mission-time input{width:66px;padding:7px;border:1px solid #343d59;border-radius:9px;outline:0;background:#0b0e19;color:white;text-align:center}.mission-time input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #73e8ff20}.controls{position:relative;z-index:3;display:flex;justify-content:center;gap:9px;margin-top:8px}.btn{position:relative;z-index:3;min-height:46px;padding:0 16px;border:1px solid #303952;border-radius:12px;background:#1a2033;color:#e8ecfa;font-size:12px;font-weight:700;touch-action:manipulation;transition:transform .18s,border-color .2s,background .2s,box-shadow .2s}.btn:hover:not(:disabled){transform:translateY(-2px);border-color:#687496;background:#222a40;box-shadow:0 8px 25px #0004}.btn:active:not(:disabled){transform:scale(.98)}.btn.primary{min-width:145px;border-color:var(--lime);background:linear-gradient(120deg,#d5ff64,#b6f85b);color:#151c0b;box-shadow:0 0 24px #d5ff6422}.btn:disabled{opacity:.42;cursor:not-allowed}.btn:focus-visible,.mode-switch button:focus-visible,.clear:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.hotkeys{margin:15px 0 0;color:#818ba5;font-size:10px}.hotkeys kbd{padding:3px 6px;border:1px solid #333c56;border-radius:5px;background:#171c2c;color:#c5cce0;font:inherit}
     .laps-panel{display:flex;min-height:440px;flex-direction:column;padding:22px;animation-delay:.12s}.laps-heading{display:flex;align-items:center;justify-content:space-between;padding-bottom:15px;border-bottom:1px solid #ffffff12}.laps-heading h2{margin:0;font-size:14px}.laps-count{padding:5px 8px;border:1px solid #303952;border-radius:999px;background:#0b0e19;color:#b2bdd6;font-size:10px}.lap-list{flex:1;max-height:350px;overflow:auto;scrollbar-color:#3b4563 transparent;scrollbar-width:thin}.empty{display:grid;min-height:300px;place-items:center;color:#75809b;text-align:center;font-size:12px;line-height:1.9}.empty-icon{display:block;margin-bottom:9px;color:#8e9abb;font-size:28px}.lap-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 2px;border-bottom:1px solid #ffffff0d;animation:lap-in .35s ease both;font-variant-numeric:tabular-nums}.lap-meta{display:flex;flex-direction:column;gap:4px;text-align:left}.lap-name{color:#dfe4f2;font-size:11px;font-weight:650}.lap-total{color:#7f8aa5;font-size:10px}.lap-split{color:#e9edfa;font-size:15px;font-weight:700}.lap-row.best .lap-split,.lap-row.best .lap-name{color:var(--lime)}.lap-tag{margin-left:5px;color:var(--lime);font-size:9px}.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;color:#76819c;font-size:10px}.clear{padding:5px 0;border:0;background:none;color:#a2acc3;font-size:10px;text-decoration:underline;text-underline-offset:3px}.clear:hover{color:white}
     @keyframes pulse{50%{opacity:.45;transform:scale(.82)}}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breath{50%{transform:scale(1.035);opacity:.7}}@keyframes drift{to{background-position:330px 280px}}@keyframes lap-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
     @media(max-width:760px){.app{width:min(600px,calc(100% - 24px));padding-top:18px}.topbar{margin-bottom:20px}.dashboard{grid-template-columns:1fr;gap:12px}.timer-panel{padding:20px 14px}.clock-stage{min-height:285px}.laps-panel{min-height:265px}.empty{min-height:155px}.lap-list{max-height:240px}}@media(max-width:390px){.brand-sub{font-size:9px}.brandmark{width:41px;height:41px}.live{padding:7px 9px;font-size:10px}.clock-stage{min-height:250px}.controls{gap:6px}.btn{padding:0 11px}.btn.primary{min-width:125px}.mode-switch button{padding:7px 8px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
@@ -38,166 +38,89 @@
   <script>
     (() => {
       const byId = id => document.getElementById(id);
-      const mainDisplay = byId('main');
-      const fractionDisplay = byId('fraction');
-      const statusBadge = byId('status');
-      const statusText = byId('statusText');
-      const startButton = byId('start');
-      const lapButton = byId('lap');
-      const resetButton = byId('reset');
-      const minutesInput = byId('minutes');
-      const ringProgress = byId('ringProgress');
+      const mainDisplay = byId('main'), fractionDisplay = byId('fraction');
+      const statusBadge = byId('status'), statusText = byId('statusText');
+      const startButton = byId('start'), lapButton = byId('lap'), resetButton = byId('reset');
+      const minutesInput = byId('minutes'), ringProgress = byId('ringProgress');
       const modeButtons = [...document.querySelectorAll('[data-mode]')];
       const circumference = 2 * Math.PI * 140;
       ringProgress.style.strokeDasharray = String(circumference);
 
-      let mode = 'up';
-      let running = false;
-      let finished = false;
-      let startedAt = 0;
-      let elapsedBeforeStart = 0;
-      let intervalId = null;
-      let previousLapTime = 0;
-      let laps = [];
-
-      function targetMs() {
-        return Math.max(1, Math.min(999, Number(minutesInput.value) || 3)) * 60000;
-      }
-      function elapsedNow() {
-        return elapsedBeforeStart + (running ? performance.now() - startedAt : 0);
-      }
+      let mode = 'up', running = false, finished = false, hasStarted = false;
+      let startedAt = 0, elapsedBeforeStart = 0, intervalId = null, previousLapTime = 0, laps = [];
+      const targetMs = () => Math.max(1, Math.min(999, Number(minutesInput.value) || 3)) * 60000;
+      const elapsedNow = () => elapsedBeforeStart + (running ? performance.now() - startedAt : 0);
       function formatTime(ms) {
-        const centiseconds = Math.floor(Math.max(0, ms) / 10);
-        const totalSeconds = Math.floor(centiseconds / 100);
-        return {
-          main: `${String(Math.floor(totalSeconds / 60)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`,
-          fraction: String(centiseconds % 100).padStart(2, '0')
-        };
+        const centiseconds = Math.floor(Math.max(0, ms) / 10), seconds = Math.floor(centiseconds / 100);
+        return {main:`${String(Math.floor(seconds / 60)).padStart(2,'0')}:${String(seconds % 60).padStart(2,'0')}`,fraction:String(centiseconds % 100).padStart(2,'0')};
       }
       function render() {
-        const elapsed = elapsedNow();
-        const remaining = Math.max(0, targetMs() - elapsed);
-        const shown = mode === 'down' ? remaining : elapsed;
-        const time = formatTime(shown);
-        mainDisplay.textContent = time.main;
-        fractionDisplay.textContent = time.fraction;
+        const elapsed = elapsedNow(), duration = targetMs(), remaining = Math.max(0, duration - elapsed);
+        const time = formatTime(mode === 'down' ? remaining : elapsed);
+        mainDisplay.textContent = time.main; fractionDisplay.textContent = time.fraction;
         byId('clock').setAttribute('aria-label', `${time.main} จุด ${time.fraction}`);
-        const progress = mode === 'down' ? Math.min(1, elapsed / targetMs()) : (elapsed % 60000) / 60000;
+        const progress = mode === 'down' ? Math.min(1, elapsed / duration) : (elapsed % 60000) / 60000;
         ringProgress.style.strokeDashoffset = String(circumference * (1 - progress));
         if (mode === 'down' && running && remaining <= 0) finishTimer();
       }
-      function setStatus(message, active = false) {
-        statusText.textContent = message;
-        statusBadge.classList.toggle('running', active);
-      }
+      function setStatus(message, active = false) { statusText.textContent = message; statusBadge.classList.toggle('running', active); }
       function startTimer() {
-        if (running) {
-          elapsedBeforeStart = elapsedNow();
-          running = false;
-          clearInterval(intervalId);
-          startButton.textContent = '▶  ทำต่อ';
-          setStatus('หยุดชั่วคราว');
-          render();
-          return;
-        }
-        if (finished) {
-          elapsedBeforeStart = 0;
-          previousLapTime = 0;
-          finished = false;
-        }
-        running = true;
-        startedAt = performance.now();
+        if (running) { elapsedBeforeStart = elapsedNow(); running = false; clearInterval(intervalId); startButton.textContent = '▶  ทำต่อ'; setStatus('หยุดชั่วคราว'); render(); return; }
+        if (finished) { elapsedBeforeStart = 0; previousLapTime = 0; laps = []; renderLaps(); finished = false; }
+        hasStarted = true; running = true; startedAt = performance.now();
         intervalId = window.setInterval(render, 10);
-        startButton.textContent = 'Ⅱ  พักเวลา';
-        lapButton.disabled = false;
-        minutesInput.disabled = true;
-        modeButtons.forEach(button => { button.disabled = true; });
-        setStatus('กำลังจับเวลา', true);
-        render();
+        startButton.textContent = 'Ⅱ  พักเวลา'; lapButton.disabled = false;
+        minutesInput.disabled = true; modeButtons.forEach(button => { button.disabled = true; });
+        setStatus('กำลังจับเวลา', true); render();
       }
       function finishTimer() {
-        running = false;
-        finished = true;
-        elapsedBeforeStart = targetMs();
-        clearInterval(intervalId);
-        startButton.textContent = '▶  เริ่มใหม่';
-        lapButton.disabled = true;
-        setStatus('หมดเวลา');
-        render();
-        playAlarm();
+        running = false; finished = true; elapsedBeforeStart = targetMs(); clearInterval(intervalId);
+        startButton.textContent = '▶  เริ่มใหม่'; lapButton.disabled = !hasStarted; setStatus('หมดเวลา'); render(); playAlarm();
       }
       function resetTimer() {
-        running = false;
-        finished = false;
-        elapsedBeforeStart = 0;
-        previousLapTime = 0;
-        clearInterval(intervalId);
-        startButton.textContent = '▶  เริ่มภารกิจ';
-        lapButton.disabled = true;
-        minutesInput.disabled = false;
-        modeButtons.forEach(button => { button.disabled = false; });
-        setStatus('พร้อมเริ่ม');
-        laps = [];
-        renderLaps();
-        render();
+        running = false; finished = false; hasStarted = false; elapsedBeforeStart = 0; previousLapTime = 0;
+        clearInterval(intervalId); startButton.textContent = '▶  เริ่มภารกิจ'; lapButton.disabled = true;
+        minutesInput.disabled = false; modeButtons.forEach(button => { button.disabled = false; });
+        setStatus('พร้อมเริ่ม'); laps = []; renderLaps(); render();
       }
       function addLap() {
-        if (!running) return;
+        // LAP ทำงานได้ทั้งตอนกำลังจับเวลาและตอนพัก/หมดเวลา หลังเริ่มภารกิจแล้ว
+        if (!hasStarted) return;
         const current = elapsedNow();
-        laps.unshift({ total: current, split: current - previousLapTime });
+        laps.unshift({total:current, split:Math.max(0,current-previousLapTime)});
         previousLapTime = current;
         renderLaps();
       }
       function renderLaps() {
         byId('count').textContent = `${laps.length} รอบ`;
-        if (laps.length === 0) {
-          byId('list').innerHTML = '<div class="empty"><div><span class="empty-icon">◷</span>ยังไม่มีข้อมูลรอบ<br>เริ่มเวลาแล้วกด “บันทึกรอบ”</div></div>';
-          return;
-        }
+        if (!laps.length) { byId('list').innerHTML = '<div class="empty"><div><span class="empty-icon">◷</span>ยังไม่มีข้อมูลรอบ<br>เริ่มเวลาแล้วกด “บันทึกรอบ”</div></div>'; return; }
         const bestSplit = Math.min(...laps.map(lap => lap.split));
-        byId('list').innerHTML = laps.map((lap, index) => {
-          const total = formatTime(lap.total);
-          const split = formatTime(lap.split);
-          const best = lap.split === bestSplit;
-          return `<div class="lap-row ${best ? 'best' : ''}"><div class="lap-meta"><span class="lap-name">รอบ ${String(laps.length - index).padStart(2, '0')}${best ? '<span class="lap-tag">✦ เร็วที่สุด</span>' : ''}</span><span class="lap-total">เวลาสะสม ${total.main}.${total.fraction}</span></div><strong class="lap-split">+${split.main}.${split.fraction}</strong></div>`;
+        byId('list').innerHTML = laps.map((lap,index) => {
+          const total = formatTime(lap.total), split = formatTime(lap.split), best = lap.split === bestSplit;
+          return `<div class="lap-row ${best?'best':''}"><div class="lap-meta"><span class="lap-name">รอบ ${String(laps.length-index).padStart(2,'0')}${best?'<span class="lap-tag">✦ เร็วที่สุด</span>':''}</span><span class="lap-total">เวลาสะสม ${total.main}.${total.fraction}</span></div><strong class="lap-split">+${split.main}.${split.fraction}</strong></div>`;
         }).join('');
       }
       function playAlarm() {
-        try {
-          const audio = new (window.AudioContext || window.webkitAudioContext)();
-          const oscillator = audio.createOscillator();
-          const gain = audio.createGain();
-          oscillator.connect(gain); gain.connect(audio.destination);
-          oscillator.frequency.value = 880;
-          gain.gain.setValueAtTime(0.18, audio.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.7);
-          oscillator.start(); oscillator.stop(audio.currentTime + 0.7);
-          oscillator.onended = () => audio.close();
-        } catch (_) { /* Audio may not be available */ }
+        try { const audio=new(window.AudioContext||window.webkitAudioContext)(),osc=audio.createOscillator(),gain=audio.createGain(); osc.connect(gain);gain.connect(audio.destination);osc.frequency.value=880;gain.gain.setValueAtTime(.18,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.7);osc.start();osc.stop(audio.currentTime+.7);osc.onended=()=>audio.close(); } catch (_) {}
       }
-
       modeButtons.forEach(button => button.addEventListener('click', () => {
         if (running) return;
-        mode = button.dataset.mode;
-        modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        byId('settings').classList.toggle('visible', mode === 'down');
-        byId('label').textContent = mode === 'down' ? 'เวลาที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที';
-        elapsedBeforeStart = 0;
-        finished = false;
-        startButton.textContent = '▶  เริ่มภารกิจ';
-        setStatus('พร้อมเริ่ม');
-        render();
+        mode = button.dataset.mode; modeButtons.forEach(item => item.setAttribute('aria-pressed',String(item===button)));
+        byId('settings').classList.toggle('visible',mode==='down');
+        byId('label').textContent = mode==='down' ? 'เวลาที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที';
+        elapsedBeforeStart=0; finished=false; hasStarted=false; lapButton.disabled=true;
+        startButton.textContent='▶  เริ่มภารกิจ'; setStatus('พร้อมเริ่ม'); render();
       }));
-      startButton.addEventListener('click', startTimer);
-      lapButton.addEventListener('click', addLap);
-      resetButton.addEventListener('click', resetTimer);
-      byId('clear').addEventListener('click', () => { laps = []; previousLapTime = elapsedNow(); renderLaps(); });
-      minutesInput.addEventListener('input', render);
-      window.addEventListener('keydown', event => {
-        if (event.ctrlKey || event.metaKey || event.altKey || ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-        if (event.code === 'Space') { event.preventDefault(); startTimer(); }
-        if (event.key.toLowerCase() === 'l') addLap();
-        if (event.key.toLowerCase() === 'r') { event.preventDefault(); resetTimer(); }
+      startButton.addEventListener('click',startTimer);
+      lapButton.addEventListener('click',event=>{event.preventDefault();addLap();});
+      resetButton.addEventListener('click',resetTimer);
+      byId('clear').addEventListener('click',()=>{laps=[];previousLapTime=elapsedNow();renderLaps();});
+      minutesInput.addEventListener('input',render);
+      window.addEventListener('keydown',event=>{
+        if(event.ctrlKey||event.metaKey||event.altKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
+        if(event.code==='Space'){event.preventDefault();startTimer();}
+        if(event.key.toLowerCase()==='l'){event.preventDefault();addLap();}
+        if(event.key.toLowerCase()==='r'){event.preventDefault();resetTimer();}
       });
       render();
     })();
