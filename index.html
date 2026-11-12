@@ -14,63 +14,23 @@
 <body>
   <main class="shell">
     <header class="header">
-      <div class="brand">
-        <div class="icon" aria-hidden="true">🤖</div>
-        <div>
-          <h1 class="title">Robot Timer</h1>
-          <p class="subtitle">เครื่องจับเวลาสำหรับภารกิจหุ่นยนต์</p>
-        </div>
-      </div>
-      <div class="status" id="status" role="status" aria-live="polite">
-        <span class="dot"></span>
-        <span id="statusText">พร้อมเริ่ม</span>
-      </div>
+      <div class="brand"><div class="icon" aria-hidden="true">🤖</div><div><h1 class="title">Robot Timer</h1><p class="subtitle">เครื่องจับเวลาสำหรับภารกิจหุ่นยนต์</p></div></div>
+      <div class="status" id="status" role="status" aria-live="polite"><span class="dot"></span><span id="statusText">พร้อมเริ่ม</span></div>
     </header>
-
     <div class="layout">
       <section class="card timer">
         <p class="eyebrow">Mission clock</p>
-        <div class="modes" role="group" aria-label="เลือกรูปแบบการจับเวลา">
-          <button type="button" data-mode="up" aria-pressed="true">จับขึ้น</button>
-          <button type="button" data-mode="down" aria-pressed="false">นับถอยหลัง</button>
-        </div>
-
-        <div class="clock" id="clock" role="timer" aria-label="เวลาที่ผ่านไป">
-          <span id="main">00:00</span><span class="fraction">.<span id="fraction">00</span></span>
-        </div>
+        <div class="modes" role="group" aria-label="เลือกรูปแบบการจับเวลา"><button type="button" data-mode="up" aria-pressed="true">จับขึ้น</button><button type="button" data-mode="down" aria-pressed="false">นับถอยหลัง</button></div>
+        <div class="clock" id="clock" role="timer" aria-label="เวลาที่ผ่านไป"><span id="main">00:00</span><span class="fraction">.<span id="fraction">00</span></span></div>
         <div class="label" id="label">นาที : วินาที : เศษวินาที</div>
-
-        <div class="settings" id="settings">
-          <label for="minutes">เวลาภารกิจ</label>
-          <input id="minutes" type="number" min="1" max="999" value="3">
-          <label for="minutes">นาที</label>
-        </div>
-
-        <div class="controls">
-          <button class="btn primary" id="start" type="button">▶ เริ่มจับเวลา</button>
-          <button class="btn" id="lap" type="button" disabled>รอบ LAP</button>
-          <button class="btn" id="reset" type="button">รีเซ็ต</button>
-        </div>
-        <p class="hint"><kbd>Space</kbd> เริ่ม/พัก &nbsp; <kbd>L</kbd> บันทึกรอบ</p>
+        <div class="settings" id="settings"><label for="minutes">เวลาภารกิจ</label><input id="minutes" type="number" min="1" max="999" value="3"><label for="minutes">นาที</label></div>
+        <div class="controls"><button class="btn primary" id="start" type="button">▶ เริ่มจับเวลา</button><button class="btn" id="lap" type="button" disabled>รอบ LAP</button><button class="btn" id="reset" type="button">รีเซ็ต</button></div>
+        <p class="hint"><kbd>Space</kbd> เริ่ม/พัก &nbsp; <kbd>L</kbd> บันทึกรอบ &nbsp; <kbd>R</kbd> รีเซ็ต</p>
       </section>
-
-      <section class="card laps" aria-labelledby="lapsTitle">
-        <div class="laps-head">
-          <h2 id="lapsTitle">เวลารอบ</h2>
-          <span class="count" id="count">0 รอบ</span>
-        </div>
-        <div class="list" id="list">
-          <div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div>
-        </div>
-      </section>
+      <section class="card laps" aria-labelledby="lapsTitle"><div class="laps-head"><h2 id="lapsTitle">เวลารอบ</h2><span class="count" id="count">0 รอบ</span></div><div class="list" id="list"><div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div></div></section>
     </div>
-
-    <footer>
-      <span>ความละเอียด 1/100 วินาที</span>
-      <button class="clear" id="clear" type="button">ล้างรอบ</button>
-    </footer>
+    <footer><span>ความละเอียด 1/100 วินาที</span><button class="clear" id="clear" type="button">ล้างรอบ</button></footer>
   </main>
-
   <script>
     (() => {
       const main = document.getElementById('main');
@@ -84,165 +44,44 @@
       const settings = document.getElementById('settings');
       const minutes = document.getElementById('minutes');
       const modeButtons = [...document.querySelectorAll('[data-mode]')];
-      let mode = 'up';
-      let running = false;
-      let finished = false;
-      let startAt = 0;
-      let elapsedBeforeStart = 0;
-      let intervalId = null;
-      let lastLapAt = 0;
-      let laps = [];
-
+      let mode = 'up', running = false, finished = false, startAt = 0, elapsedBeforeStart = 0, intervalId = null, lastLapAt = 0, laps = [];
       const targetMs = () => Math.max(1, Math.min(999, Number(minutes.value) || 3)) * 60000;
       const totalElapsed = () => elapsedBeforeStart + (running ? performance.now() - startAt : 0);
       const fmt = (ms) => {
-        const cent = Math.floor(Math.max(0, ms) / 10);
-        const cs = cent % 100;
-        const totalSeconds = Math.floor(cent / 100);
-        const sec = totalSeconds % 60;
-        const min = Math.floor(totalSeconds / 60);
-        return {
-          main: String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0'),
-          fraction: String(cs).padStart(2, '0')
-        };
+        const cent = Math.floor(Math.max(0, ms) / 10), cs = cent % 100, seconds = Math.floor(cent / 100);
+        return { main: String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0'), fraction: String(cs).padStart(2, '0') };
       };
-
       function render() {
-        const now = totalElapsed();
-        const shown = mode === 'down' ? Math.max(0, targetMs() - now) : now;
-        const time = fmt(shown);
-        main.textContent = time.main;
-        fraction.textContent = time.fraction;
+        const shown = mode === 'down' ? Math.max(0, targetMs() - totalElapsed()) : totalElapsed();
+        const time = fmt(shown); main.textContent = time.main; fraction.textContent = time.fraction;
+        document.getElementById('clock').setAttribute('aria-label', `${time.main} จุด ${time.fraction}`);
         if (mode === 'down' && running && shown <= 0) finishTimer();
       }
-
-      function setStatus(text, active = false) {
-        statusText.textContent = text;
-        status.classList.toggle('running', active);
-      }
-
+      function setStatus(text, active = false) { statusText.textContent = text; status.classList.toggle('running', active); }
       function startTimer() {
-        if (running) {
-          elapsedBeforeStart = totalElapsed();
-          running = false;
-          clearInterval(intervalId);
-          startBtn.textContent = '▶ ทำต่อ';
-          setStatus('หยุดชั่วคราว');
-          render();
-          return;
-        }
-
-        if (finished) {
-          elapsedBeforeStart = 0;
-          finished = false;
-        }
-
-        running = true;
-        startAt = performance.now();
-        intervalId = setInterval(render, 10);
-        startBtn.textContent = 'Ⅱ พักเวลา';
-        lapBtn.disabled = false;
-        minutes.disabled = true;
-        modeButtons.forEach(btn => btn.disabled = true);
-        setStatus('กำลังจับเวลา', true);
-        render();
+        if (running) { elapsedBeforeStart = totalElapsed(); running = false; clearInterval(intervalId); startBtn.textContent = '▶ ทำต่อ'; setStatus('หยุดชั่วคราว'); render(); return; }
+        if (finished) { elapsedBeforeStart = 0; finished = false; }
+        running = true; startAt = performance.now(); intervalId = setInterval(render, 10); startBtn.textContent = 'Ⅱ พักเวลา'; lapBtn.disabled = false; minutes.disabled = true; modeButtons.forEach(btn => btn.disabled = true); setStatus('กำลังจับเวลา', true); render();
       }
-
-      function finishTimer() {
-        running = false;
-        finished = true;
-        elapsedBeforeStart = targetMs();
-        clearInterval(intervalId);
-        startBtn.textContent = '▶ เริ่มใหม่';
-        lapBtn.disabled = true;
-        setStatus('หมดเวลา');
-        render();
-        beep();
-      }
-
-      function resetTimer() {
-        running = false;
-        finished = false;
-        elapsedBeforeStart = 0;
-        lastLapAt = 0;
-        clearInterval(intervalId);
-        startBtn.textContent = '▶ เริ่มจับเวลา';
-        lapBtn.disabled = true;
-        minutes.disabled = false;
-        modeButtons.forEach(btn => btn.disabled = false);
-        setStatus('พร้อมเริ่ม');
-        render();
-      }
-
-      function addLap() {
-        if (!running) return;
-        const t = totalElapsed();
-        laps.unshift({ total: t, split: t - lastLapAt });
-        lastLapAt = t;
-        renderLaps();
-      }
-
+      function finishTimer() { running = false; finished = true; elapsedBeforeStart = targetMs(); clearInterval(intervalId); startBtn.textContent = '▶ เริ่มใหม่'; lapBtn.disabled = true; setStatus('หมดเวลา'); render(); beep(); }
+      function resetTimer() { running = false; finished = false; elapsedBeforeStart = 0; lastLapAt = 0; clearInterval(intervalId); startBtn.textContent = '▶ เริ่มจับเวลา'; lapBtn.disabled = true; minutes.disabled = false; modeButtons.forEach(btn => btn.disabled = false); setStatus('พร้อมเริ่ม'); render(); }
+      function addLap() { if (!running) return; const t = totalElapsed(); laps.unshift({ total: t, split: t - lastLapAt }); lastLapAt = t; renderLaps(); }
       function renderLaps() {
-        const countEl = document.getElementById('count');
-        countEl.textContent = `${laps.length} รอบ`;
-        if (!laps.length) {
-          document.getElementById('list').innerHTML = '<div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div>';
-          return;
-        }
-
+        document.getElementById('count').textContent = `${laps.length} รอบ`;
+        if (!laps.length) { document.getElementById('list').innerHTML = '<div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div>'; return; }
         const best = Math.min(...laps.map(x => x.split));
-        document.getElementById('list').innerHTML = laps.map((lap, index) => {
-          const total = fmt(lap.total);
-          const split = fmt(lap.split);
-          const tag = lap.split === best ? ' · เร็วสุด' : '';
-          return `<div class="lap ${lap.split === best ? 'best' : ''}"><small>รอบ ${String(laps.length - index).padStart(2, '0')} · รวม ${total.main}.${total.fraction}${tag}</small><strong>+${split.main}.${split.fraction}</strong></div>`;
-        }).join('');
+        document.getElementById('list').innerHTML = laps.map((lap, index) => { const total = fmt(lap.total), split = fmt(lap.split), tag = lap.split === best ? ' · เร็วสุด' : ''; return `<div class="lap ${lap.split === best ? 'best' : ''}"><small>รอบ ${String(laps.length - index).padStart(2, '0')} · รวม ${total.main}.${total.fraction}${tag}</small><strong>+${split.main}.${split.fraction}</strong></div>`; }).join('');
       }
-
-      function beep() {
-        try {
-          const audio = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = audio.createOscillator();
-          const gain = audio.createGain();
-          osc.connect(gain);
-          gain.connect(audio.destination);
-          osc.frequency.value = 880;
-          gain.gain.setValueAtTime(0.18, audio.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.7);
-          osc.start();
-          osc.stop(audio.currentTime + 0.7);
-          osc.onended = () => audio.close();
-        } catch (_) {}
-      }
-
-      modeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          if (running) return;
-          mode = button.dataset.mode;
-          modeButtons.forEach(btn => btn.setAttribute('aria-pressed', String(btn === button)));
-          settings.classList.toggle('visible', mode === 'down');
-          document.getElementById('label').textContent = mode === 'down' ? 'เวล��ที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที';
-          elapsedBeforeStart = 0;
-          finished = false;
-          startBtn.textContent = '▶ เริ่มจับเวลา';
-          setStatus('พร้อมเริ่ม');
-          render();
-        });
-      });
-
-      startBtn.addEventListener('click', startTimer);
-      lapBtn.addEventListener('click', addLap);
-      resetBtn.addEventListener('click', resetTimer);
+      function beep() { try { const audio = new (window.AudioContext || window.webkitAudioContext)(), osc = audio.createOscillator(), gain = audio.createGain(); osc.connect(gain); gain.connect(audio.destination); osc.frequency.value = 880; gain.gain.setValueAtTime(.18, audio.currentTime); gain.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .7); osc.start(); osc.stop(audio.currentTime + .7); osc.onended = () => audio.close(); } catch (_) {} }
+      modeButtons.forEach(button => button.addEventListener('click', () => { if (running) return; mode = button.dataset.mode; modeButtons.forEach(btn => btn.setAttribute('aria-pressed', String(btn === button))); settings.classList.toggle('visible', mode === 'down'); document.getElementById('label').textContent = mode === 'down' ? 'เวลาที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที'; elapsedBeforeStart = 0; finished = false; startBtn.textContent = '▶ เริ่มจับเวลา'; setStatus('พร้อมเริ่ม'); render(); }));
+      startBtn.addEventListener('click', startTimer); lapBtn.addEventListener('click', addLap); resetBtn.addEventListener('click', resetTimer);
       clearBtn.addEventListener('click', () => { laps = []; lastLapAt = totalElapsed(); renderLaps(); });
       minutes.addEventListener('change', render);
-      window.addEventListener('keydown', (event) => {
-        if (event.code === 'Space' && !['INPUT', 'BUTTON'].includes(document.activeElement.tagName)) {
-          event.preventDefault();
-          startTimer();
-        }
-        if (event.key.toLowerCase() === 'l' && !['INPUT', 'BUTTON'].includes(document.activeElement.tagName)) {
-          addLap();
-        }
+      window.addEventListener('keydown', event => {
+        if (event.ctrlKey || event.metaKey || event.altKey || ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+        if (event.code === 'Space') { event.preventDefault(); startTimer(); }
+        if (event.key.toLowerCase() === 'l') addLap();
+        if (event.key.toLowerCase() === 'r') { event.preventDefault(); resetTimer(); }
       });
       render();
     })();
