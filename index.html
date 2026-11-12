@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <title>Robot Timer</title>
+  <style>
+    :root { color-scheme: dark; --bg:#10131c; --panel:#191e2a; --line:#30394c; --text:#f5f7fb; --muted:#9ba6ba; --accent:#c8ff55; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -18%,#293149 0,var(--bg) 55%);color:var(--text)}
+    button,input{font:inherit} button{cursor:pointer}.shell{width:min(900px,calc(100% - 28px));margin:0 auto;padding:28px 0 40px}.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.icon{display:grid;place-items:center;width:44px;height:44px;border:1px solid #46513a;border-radius:14px;background:#222b1a;font-size:23px}.title{margin:0;font-size:18px}.subtitle{margin:3px 0 0;color:var(--muted);font-size:13px}.status{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#697386}.status.running{color:var(--accent);border-color:#526637}.status.running .dot{background:var(--accent);box-shadow:0 0 12px #c8ff5590}.layout{display:grid;grid-template-columns:1.5fr 0.8fr;gap:16px}.card{border:1px solid var(--line);border-radius:22px;background:#191e2aee;box-shadow:0 18px 60px #0002}.timer{padding:clamp(22px,5vw,42px);text-align:center}.eyebrow{margin:0 0 12px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.modes{display:inline-flex;gap:4px;padding:4px;margin-bottom:20px;border:1px solid var(--line);border-radius:12px;background:#10141d}.modes button{padding:8px 14px;border:0;border-radius:8px;background:transparent;color:var(--muted)}.modes button[aria-pressed="true"]{background:#202636;color:var(--text)}.clock{margin:5px 0;font-size:clamp(58px,12vw,100px);font-weight:750;line-height:1;letter-spacing:-.06em;white-space:nowrap}.fraction{color:var(--accent)}.label{min-height:20px;color:var(--muted);font-size:13px}.settings{display:none;align-items:center;justify-content:center;gap:8px;margin:18px 0 0;color:var(--muted);font-size:13px}.settings.visible{display:flex}.settings input{width:76px;padding:8px;border:1px solid var(--line);border-radius:9px;color:var(--text);background:#10141d;text-align:center}.controls{display:flex;justify-content:center;gap:10px;margin-top:28px}.btn{min-height:48px;padding:0 18px;border:1px solid var(--line);border-radius:12px;color:var(--text);background:#202636;font-weight:700}.btn.primary{min-width:150px;border-color:var(--accent);color:#171d0c;background:var(--accent)}.btn:disabled{opacity:.45;cursor:not-allowed}.hint{margin:17px 0 0;color:#788398;font-size:12px}kbd{padding:2px 6px;border:1px solid #414a5d;border-radius:5px;color:#bac4d4;background:#202636;font-size:11px}.laps{padding:20px;min-height:360px}.laps-head{display:flex;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line)}.laps-head h2{margin:0;font-size:15px}.count{color:var(--muted);font-size:12px}.list{max-height:300px;overflow:auto}.empty{display:grid;min-height:230px;place-items:center;color:#788398;text-align:center;font-size:13px}.lap{display:flex;justify-content:space-between;gap:8px;padding:13px 2px;border-bottom:1px solid #282f3e;font-variant-numeric:tabular-nums}.lap small{color:var(--muted)}.lap strong{font-size:15px}.lap.best strong{color:var(--accent)}footer{display:flex;justify-content:space-between;margin-top:18px;color:#788398;font-size:12px}.clear{padding:0;border:0;color:var(--muted);background:none;text-decoration:underline}.clear:hover{color:var(--text)}@media(max-width:680px){.shell{padding-top:18px}.layout{grid-template-columns:1fr;gap:12px}.timer{padding:24px 12px}.clock{font-size:clamp(55px,15vw,82px)}.laps{min-height:220px}.list{max-height:230px}.empty{min-height:110px}}@media(max-width:380px){.controls{gap:6px}.btn{padding:0 12px}.btn.primary{min-width:128px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <div class="brand">
+        <div class="icon" aria-hidden="true">🤖</div>
+        <div>
+          <h1 class="title">Robot Timer</h1>
+          <p class="subtitle">เครื่องจับเวลาสำหรับภารกิจหุ่นยนต์</p>
+        </div>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite">
+        <span class="dot"></span>
+        <span id="statusText">พร้อมเริ่ม</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="card timer">
+        <p class="eyebrow">Mission clock</p>
+        <div class="modes" role="group" aria-label="เลือกรูปแบบการจับเวลา">
+          <button type="button" data-mode="up" aria-pressed="true">จับขึ้น</button>
+          <button type="button" data-mode="down" aria-pressed="false">นับถอยหลัง</button>
+        </div>
+
+        <div class="clock" id="clock" role="timer" aria-label="เวลาที่ผ่านไป">
+          <span id="main">00:00</span><span class="fraction">.<span id="fraction">00</span></span>
+        </div>
+        <div class="label" id="label">นาที : วินาที : เศษวินาที</div>
+
+        <div class="settings" id="settings">
+          <label for="minutes">เวลาภารกิจ</label>
+          <input id="minutes" type="number" min="1" max="999" value="3">
+          <label for="minutes">นาที</label>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="start" type="button">▶ เริ่มจับเวลา</button>
+          <button class="btn" id="lap" type="button" disabled>รอบ LAP</button>
+          <button class="btn" id="reset" type="button">รีเซ็ต</button>
+        </div>
+        <p class="hint"><kbd>Space</kbd> เริ่ม/พัก &nbsp; <kbd>L</kbd> บันทึกรอบ</p>
+      </section>
+
+      <section class="card laps" aria-labelledby="lapsTitle">
+        <div class="laps-head">
+          <h2 id="lapsTitle">เวลารอบ</h2>
+          <span class="count" id="count">0 รอบ</span>
+        </div>
+        <div class="list" id="list">
+          <div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>ความละเอียด 1/100 วินาที</span>
+      <button class="clear" id="clear" type="button">ล้างรอบ</button>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const main = document.getElementById('main');
+      const fraction = document.getElementById('fraction');
+      const status = document.getElementById('status');
+      const statusText = document.getElementById('statusText');
+      const startBtn = document.getElementById('start');
+      const lapBtn = document.getElementById('lap');
+      const resetBtn = document.getElementById('reset');
+      const clearBtn = document.getElementById('clear');
+      const settings = document.getElementById('settings');
+      const minutes = document.getElementById('minutes');
+      const modeButtons = [...document.querySelectorAll('[data-mode]')];
+      let mode = 'up';
+      let running = false;
+      let finished = false;
+      let startAt = 0;
+      let elapsedBeforeStart = 0;
+      let intervalId = null;
+      let lastLapAt = 0;
+      let laps = [];
+
+      const targetMs = () => Math.max(1, Math.min(999, Number(minutes.value) || 3)) * 60000;
+      const totalElapsed = () => elapsedBeforeStart + (running ? performance.now() - startAt : 0);
+      const fmt = (ms) => {
+        const cent = Math.floor(Math.max(0, ms) / 10);
+        const cs = cent % 100;
+        const totalSeconds = Math.floor(cent / 100);
+        const sec = totalSeconds % 60;
+        const min = Math.floor(totalSeconds / 60);
+        return {
+          main: String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0'),
+          fraction: String(cs).padStart(2, '0')
+        };
+      };
+
+      function render() {
+        const now = totalElapsed();
+        const shown = mode === 'down' ? Math.max(0, targetMs() - now) : now;
+        const time = fmt(shown);
+        main.textContent = time.main;
+        fraction.textContent = time.fraction;
+        if (mode === 'down' && running && shown <= 0) finishTimer();
+      }
+
+      function setStatus(text, active = false) {
+        statusText.textContent = text;
+        status.classList.toggle('running', active);
+      }
+
+      function startTimer() {
+        if (running) {
+          elapsedBeforeStart = totalElapsed();
+          running = false;
+          clearInterval(intervalId);
+          startBtn.textContent = '▶ ทำต่อ';
+          setStatus('หยุดชั่วคราว');
+          render();
+          return;
+        }
+
+        if (finished) {
+          elapsedBeforeStart = 0;
+          finished = false;
+        }
+
+        running = true;
+        startAt = performance.now();
+        intervalId = setInterval(render, 10);
+        startBtn.textContent = 'Ⅱ พักเวลา';
+        lapBtn.disabled = false;
+        minutes.disabled = true;
+        modeButtons.forEach(btn => btn.disabled = true);
+        setStatus('กำลังจับเวลา', true);
+        render();
+      }
+
+      function finishTimer() {
+        running = false;
+        finished = true;
+        elapsedBeforeStart = targetMs();
+        clearInterval(intervalId);
+        startBtn.textContent = '▶ เริ่มใหม่';
+        lapBtn.disabled = true;
+        setStatus('หมดเวลา');
+        render();
+        beep();
+      }
+
+      function resetTimer() {
+        running = false;
+        finished = false;
+        elapsedBeforeStart = 0;
+        lastLapAt = 0;
+        clearInterval(intervalId);
+        startBtn.textContent = '▶ เริ่มจับเวลา';
+        lapBtn.disabled = true;
+        minutes.disabled = false;
+        modeButtons.forEach(btn => btn.disabled = false);
+        setStatus('พร้อมเริ่ม');
+        render();
+      }
+
+      function addLap() {
+        if (!running) return;
+        const t = totalElapsed();
+        laps.unshift({ total: t, split: t - lastLapAt });
+        lastLapAt = t;
+        renderLaps();
+      }
+
+      function renderLaps() {
+        const countEl = document.getElementById('count');
+        countEl.textContent = `${laps.length} รอบ`;
+        if (!laps.length) {
+          document.getElementById('list').innerHTML = '<div class="empty">ยังไม่มีเวลารอบ<br>กด “รอบ LAP” ระหว่างจับเวลา</div>';
+          return;
+        }
+
+        const best = Math.min(...laps.map(x => x.split));
+        document.getElementById('list').innerHTML = laps.map((lap, index) => {
+          const total = fmt(lap.total);
+          const split = fmt(lap.split);
+          const tag = lap.split === best ? ' · เร็วสุด' : '';
+          return `<div class="lap ${lap.split === best ? 'best' : ''}"><small>รอบ ${String(laps.length - index).padStart(2, '0')} · รวม ${total.main}.${total.fraction}${tag}</small><strong>+${split.main}.${split.fraction}</strong></div>`;
+        }).join('');
+      }
+
+      function beep() {
+        try {
+          const audio = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audio.createOscillator();
+          const gain = audio.createGain();
+          osc.connect(gain);
+          gain.connect(audio.destination);
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.18, audio.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.7);
+          osc.start();
+          osc.stop(audio.currentTime + 0.7);
+          osc.onended = () => audio.close();
+        } catch (_) {}
+      }
+
+      modeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          if (running) return;
+          mode = button.dataset.mode;
+          modeButtons.forEach(btn => btn.setAttribute('aria-pressed', String(btn === button)));
+          settings.classList.toggle('visible', mode === 'down');
+          document.getElementById('label').textContent = mode === 'down' ? 'เวล��ที่เหลือ · นาที : วินาที : เศษวินาที' : 'นาที : วินาที : เศษวินาที';
+          elapsedBeforeStart = 0;
+          finished = false;
+          startBtn.textContent = '▶ เริ่มจับเวลา';
+          setStatus('พร้อมเริ่ม');
+          render();
+        });
+      });
+
+      startBtn.addEventListener('click', startTimer);
+      lapBtn.addEventListener('click', addLap);
+      resetBtn.addEventListener('click', resetTimer);
+      clearBtn.addEventListener('click', () => { laps = []; lastLapAt = totalElapsed(); renderLaps(); });
+      minutes.addEventListener('change', render);
+      window.addEventListener('keydown', (event) => {
+        if (event.code === 'Space' && !['INPUT', 'BUTTON'].includes(document.activeElement.tagName)) {
+          event.preventDefault();
+          startTimer();
+        }
+        if (event.key.toLowerCase() === 'l' && !['INPUT', 'BUTTON'].includes(document.activeElement.tagName)) {
+          addLap();
+        }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
